@@ -1,0 +1,97 @@
+# ~/.config/starship.toml
+
+# Two-line prompt format
+format = """
+$shell\
+$status\
+$directory\
+$git_branch\
+$git_status\
+$git_state\
+$python\
+$golang\
+$nodejs\
+$rust\
+$line_break\
+$character"""
+
+# Shell indicator for fish modes (vi mode)
+[shell]
+fish_indicator = ""
+bash_indicator = ""
+zsh_indicator = ""
+
+# Exit status (shows actual exit code)
+[status]
+style = "bg:red fg:black"
+symbol = ""
+format = '[ $symbol$int ]($style)'
+map_symbol = false
+disabled = false
+
+# Current directory
+[directory]
+style = "bg:blue fg:black"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+# Git branch
+[git_branch]
+symbol = " "
+style = "bg:green fg:black"
+format = "[ $symbol$branch ]($style)"
+
+# Git status with detailed counts
+[git_status]
+format = '[ $all_status$ahead_behind ]($style)'
+style = "bg:cyan fg:black"
+conflicted = "⚠ ${count} "
+ahead = "↑ ${count} "
+behind = "↓ ${count} "
+diverged = "↑${ahead_count}↓${behind_count} "
+up_to_date = ""
+untracked = "● ${count} "
+stashed = "📦 ${count} "
+modified = "✏ ${count} "
+staged = "✓ ${count} "
+renamed = "➜ ${count} "
+deleted = "✗ ${count} "
+
+# Git state (merge, rebase, etc.)
+[git_state]
+format = '\([$state( $progress_current/$progress_total)]($style)\) '
+style = "bright-yellow"
+
+# Python version
+[python]
+symbol = " "
+format = '[$symbol$pyversion]($style) '
+style = "yellow bold"
+
+# Go version
+[golang]
+symbol = " "
+format = '[$symbol$version]($style) '
+style = "cyan bold"
+
+# Node.js version
+[nodejs]
+symbol = " "
+format = '[$symbol$version]($style) '
+style = "green bold"
+
+# Rust version
+[rust]
+symbol = " "
+format = '[$symbol$version]($style) '
+style = "red bold"
+
+# Character prompt with vi mode indicators
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[➜](bold red)"
+vimcmd_symbol = "[N](bold yellow)[➜](bold yellow)"
+vimcmd_replace_one_symbol = "[R](bold purple)[➜](bold purple)"
+vimcmd_replace_symbol = "[R](bold purple)[➜](bold purple)"
+vimcmd_visual_symbol = "[V](bold blue)[➜](bold blue)"
