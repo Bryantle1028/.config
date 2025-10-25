@@ -4,7 +4,17 @@ set fish_cursor_visual underscore
 set fish_cursor_default underscore
 set fish_cursor_insert underscore
 
-set -Ux LSCOLORS gxfxcxdxbxegedabagacad
+set -Ux LSCOLORS exfxcxdxbxegedabagacad
+
+# Load API keys from private config file (not tracked in git)
+if test -f ~/.config/fish/private.fish
+    source ~/.config/fish/private.fish
+end
+
+function ls --description 'List contents of directory'
+    set -lx LS_COLORS 'di=36:fi='
+    command ls --color=auto -F $argv
+end
 
 fish_add_path /opt/homebrew/bin
 
