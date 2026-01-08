@@ -29,6 +29,7 @@ return {
                 "lua_ls",
                 "pyright",
                 "marksman",
+                "jsonls",
             },
             handlers = {
                 function(server_name)
