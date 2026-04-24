@@ -33,6 +33,50 @@ end
 
 if status is-interactive
     # Commands to run in interactive sessions can go here
+    alias cn='claude -w'       # new claude session with worktree
+    alias cr='claude --resume'  # resume existing claude session
+    alias x='codex'
+    alias xn='cw'               # new codex session with worktree
+    alias xr='codex resume'     # resume existing codex session
+    alias xrl='codex resume --last'
+
+    function cw --description 'Create a git worktree and start Codex in it'
+        if test (count $argv) -lt 1
+            echo "usage: cw <branch-name> [codex prompt...]"
+            return 2
+        end
+
+        set -l branch $argv[1]
+        set -e argv[1]
+
+        set -l root (git rev-parse --show-toplevel 2>/dev/null)
+        if test $status -ne 0
+            echo "cw: not in a git repository"
+            return 1
+        end
+
+        set -l repo_name (basename "$root")
+        set -l parent (dirname "$root")
+        set -l worktree_name (string replace -ra '[^A-Za-z0-9._-]+' '-' "$branch")
+        set -l worktree "$parent/$repo_name-$worktree_name"
+
+        if test -e "$worktree"
+            echo "cw: $worktree already exists"
+            return 1
+        end
+
+        if git -C "$root" show-ref --verify --quiet "refs/heads/$branch"
+            git -C "$root" worktree add "$worktree" "$branch"
+        else
+            git -C "$root" worktree add -b "$branch" "$worktree"
+        end
+
+        if test $status -ne 0
+            return $status
+        end
+
+        codex --cd "$worktree" $argv
+    end
 end
 
 starship init fish | source
