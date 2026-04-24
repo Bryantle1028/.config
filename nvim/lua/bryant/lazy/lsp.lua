@@ -30,6 +30,7 @@ return {
                 "pyright",
                 "marksman",
                 "jsonls",
+                "ts_ls",
             },
             handlers = {
                 function(server_name)
