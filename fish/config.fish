@@ -41,13 +41,13 @@ if status is-interactive
     alias xrl='codex resume --last'
 
     function cw --description 'Create a git worktree and start Codex in it'
-        if test (count $argv) -lt 1
-            echo "usage: cw <branch-name> [codex prompt...]"
-            return 2
+        set -l branch
+        if test (count $argv) -gt 0
+            set branch $argv[1]
+            set -e argv[1]
+        else
+            set branch codex/(date "+%Y%m%d-%H%M%S")
         end
-
-        set -l branch $argv[1]
-        set -e argv[1]
 
         set -l root (git rev-parse --show-toplevel 2>/dev/null)
         if test $status -ne 0
