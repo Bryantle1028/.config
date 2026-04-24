@@ -41,12 +41,12 @@ if status is-interactive
     alias xrl='codex resume --last'
 
     function cw --description 'Create a git worktree and start Codex in it'
-        set -l branch
+        set -l session_name
         if test (count $argv) -gt 0
-            set branch $argv[1]
+            set session_name $argv[1]
             set -e argv[1]
         else
-            set branch codex/(date "+%Y%m%d-%H%M%S")
+            set session_name codex-(date "+%Y%m%d-%H%M%S")
         end
 
         set -l root (git rev-parse --show-toplevel 2>/dev/null)
@@ -57,7 +57,7 @@ if status is-interactive
 
         set -l repo_name (basename "$root")
         set -l parent (dirname "$root")
-        set -l worktree_name (string replace -ra '[^A-Za-z0-9._-]+' '-' "$branch")
+        set -l worktree_name (string replace -ra '[^A-Za-z0-9._-]+' '-' "$session_name")
         set -l worktree "$parent/$repo_name-$worktree_name"
 
         if test -e "$worktree"
@@ -65,11 +65,7 @@ if status is-interactive
             return 1
         end
 
-        if git -C "$root" show-ref --verify --quiet "refs/heads/$branch"
-            git -C "$root" worktree add "$worktree" "$branch"
-        else
-            git -C "$root" worktree add -b "$branch" "$worktree"
-        end
+        git -C "$root" worktree add --detach "$worktree" HEAD
 
         if test $status -ne 0
             return $status
