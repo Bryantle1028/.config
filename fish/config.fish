@@ -37,8 +37,8 @@ if status is-interactive
     alias cr='claude --resume'  # resume existing claude session
     alias x='codex'
     alias xn='cw'               # new codex session with worktree
-    alias xr='codex resume'     # resume existing codex session
-    alias xrl='codex resume --last'
+    alias xr='codex resume --all'     # resume existing codex session across worktrees
+    alias xrl='codex resume --all --last'
 
     function cw --description 'Create a git worktree and start Codex in it'
         set -l session_name
@@ -55,17 +55,40 @@ if status is-interactive
             return 1
         end
 
-        set -l repo_name (basename "$root")
-        set -l parent (dirname "$root")
+        set -l git_common_dir (git -C "$root" rev-parse --path-format=absolute --git-common-dir 2>/dev/null)
+        if test $status -ne 0
+            return $status
+        end
+
+        set -l repo_root (dirname "$git_common_dir")
         set -l worktree_name (string replace -ra '[^A-Za-z0-9._-]+' '-' "$session_name")
-        set -l worktree "$parent/$repo_name-$worktree_name"
+        set -l worktree_parent "$repo_root/.codex/worktrees"
+        set -l worktree "$worktree_parent/$worktree_name"
 
         if test -e "$worktree"
             echo "cw: $worktree already exists"
             return 1
         end
 
-        git -C "$root" worktree add --detach "$worktree" HEAD
+        mkdir -p "$worktree_parent"
+        if test $status -ne 0
+            return $status
+        end
+
+        set -l base_ref main
+        if git -C "$root" remote get-url origin >/dev/null 2>&1
+            echo "cw: fetching latest main from origin"
+            git -C "$root" fetch origin +refs/heads/main:refs/remotes/origin/main
+            if test $status -ne 0
+                return $status
+            end
+            set base_ref origin/main
+        else if not git -C "$root" show-ref --verify --quiet refs/heads/main
+            echo "cw: main branch not found"
+            return 1
+        end
+
+        git -C "$root" worktree add --detach "$worktree" "$base_ref"
 
         if test $status -ne 0
             return $status
