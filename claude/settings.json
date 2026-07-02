@@ -1,0 +1,53 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Bash(cd *)",
+      "Bash(npx *)",
+      "Bash(head *)",
+      "Bash(echo *)",
+      "Bash(cat *)",
+      "Bash(ls *)",
+      "Bash(git fetch *)",
+      "Bash(git add *)",
+      "Bash(git checkout *)",
+      "Bash(git stash *)",
+      "Bash(gh pr view *)",
+      "Bash(jq *)",
+      "mcp__linear-server",
+      "mcp__supabase__list_tables",
+      "mcp__supabase__list_extensions",
+      "mcp__supabase__list_migrations",
+      "mcp__supabase__list_branches",
+      "mcp__supabase__list_edge_functions",
+      "mcp__supabase__get_edge_function",
+      "mcp__supabase__get_logs",
+      "mcp__supabase__get_advisors",
+      "mcp__supabase__get_project_url",
+      "mcp__supabase__get_publishable_keys",
+      "mcp__supabase__generate_typescript_types",
+      "mcp__supabase__search_docs"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "mcp__supabase__execute_sql",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -c '(.tool_input.query // \"\") | ascii_downcase as $q | (($q | test(\"^\\\\s*(select|with|explain|show)\\\\b\")) and (($q | test(\"\\\\b(insert|update|delete|drop|alter|create|truncate|grant|revoke|vacuum|copy|call|do)\\\\b\")) | not)) as $ro | {hookSpecificOutput: {hookEventName: \"PreToolUse\", permissionDecision: (if $ro then \"allow\" else \"ask\" end), permissionDecisionReason: (if $ro then \"read-only SQL auto-allowed\" else \"potentially writing SQL — needs approval\" end)}}'",
+            "statusMessage": "Checking SQL is read-only"
+          }
+        ]
+      }
+    ]
+  },
+  "model": "claude-fable-5[1m]",
+  "statusLine": {
+    "type": "command",
+    "command": "bash /Users/bryant/.claude/statusline-command.sh"
+  },
+  "alwaysThinkingEnabled": true,
+  "effortLevel": "high"
+}
