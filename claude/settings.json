@@ -13,6 +13,7 @@
       "Bash(git checkout *)",
       "Bash(git stash *)",
       "Bash(gh pr view *)",
+      "Bash(grep *)",
       "Bash(jq *)",
       "mcp__linear-server",
       "mcp__supabase__list_tables",
