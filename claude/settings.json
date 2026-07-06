@@ -15,6 +15,7 @@
       "Bash(gh pr view *)",
       "Bash(grep *)",
       "Bash(jq *)",
+      "Bash(set *)",
       "mcp__linear-server",
       "mcp__supabase__list_tables",
       "mcp__supabase__list_extensions",
@@ -30,6 +31,7 @@
       "mcp__supabase__search_docs"
     ]
   },
+  "model": "claude-fable-5[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -44,7 +46,6 @@
       }
     ]
   },
-  "model": "claude-fable-5[1m]",
   "statusLine": {
     "type": "command",
     "command": "bash /Users/bryant/.claude/statusline-command.sh"
